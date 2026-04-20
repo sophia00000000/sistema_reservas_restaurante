@@ -1,0 +1,209 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card">
+    <h2>Seleccion de restaurante</h2>
+    <form method="get" class="form-inline">
+        <label>Restaurante</label>
+        <select name="restaurante" required>
+            <option value="">Selecciona</option>
+            {% for r in restaurantes %}
+            <option value="{{ r.id_restaurante }}" {% if selected_restaurante and selected_restaurante|int == r.id_restaurante %}selected{% endif %}>{{ r.nombre }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Ver horarios</button>
+    </form>
+</section>
+
+<section class="grid-2">
+    <article class="card">
+        <h2>Crear restaurante</h2>
+        <form method="post" class="form-grid">
+            <input type="hidden" name="accion" value="crear_restaurante">
+            <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
+
+            <label>Nombre</label>
+            <input type="text" name="nombre" required>
+
+            <label>Direccion</label>
+            <input type="text" name="direccion" required>
+
+            <label>Telefono</label>
+            <input type="text" name="telefono">
+
+            <label>Descripcion</label>
+            <textarea name="descripcion" rows="2"></textarea>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </article>
+
+    <article class="card">
+        <h2>Crear mesa</h2>
+        <form method="post" class="form-grid">
+            <input type="hidden" name="accion" value="crear_mesa">
+            <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
+
+            <label>Restaurante</label>
+            <select name="id_restaurante" required>
+                {% for r in restaurantes %}
+                <option value="{{ r.id_restaurante }}">{{ r.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Numero</label>
+            <input type="number" name="numero" min="1" required>
+
+            <label>Capacidad</label>
+            <input type="number" name="capacidad" min="1" required>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </article>
+</section>
+
+<section class="grid-1 mt">
+    <article class="card">
+        <h2>Crear horario</h2>
+        <form method="post" class="form-inline">
+            <input type="hidden" name="accion" value="crear_horario">
+            <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
+
+            <select name="id_restaurante" required>
+                {% for r in restaurantes %}
+                <option value="{{ r.id_restaurante }}">{{ r.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="dia_semana" required>
+                {% for dia in ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'] %}
+                <option value="{{ dia }}">{{ dia }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="time" name="hora_inicio" required>
+            <input type="time" name="hora_fin" required>
+            <button type="submit">Guardar</button>
+        </form>
+    </article>
+</section>
+
+<section class="card mt">
+    <h3>CRUD de restaurantes</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Direccion</th>
+                <th>Telefono</th>
+                <th>Descripcion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in restaurantes %}
+            <tr>
+                <form method="post">
+                    <td>
+                        {{ r.id_restaurante }}
+                        <input type="hidden" name="id_restaurante" value="{{ r.id_restaurante }}">
+                        <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
+                    </td>
+                    <td><input type="text" name="nombre" value="{{ r.nombre }}" required></td>
+                    <td><input type="text" name="direccion" value="{{ r.direccion }}" required></td>
+                    <td><input type="text" name="telefono" value="{{ r.telefono or '' }}"></td>
+                    <td><input type="text" name="descripcion" value="{{ r.descripcion or '' }}"></td>
+                    <td class="actions">
+                        <button type="submit" name="accion" value="actualizar_restaurante">Actualizar</button>
+                        <button type="submit" name="accion" value="eliminar_restaurante" onclick="return confirm('Eliminar restaurante y sus mesas/horarios?')">Eliminar</button>
+                    </td>
+                </form>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">Sin restaurantes</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+
+<section class="card mt">
+    <h3>Horarios del restaurante seleccionado</h3>
+    {% if selected_restaurante %}
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Dia</th>
+                <th>Hora inicio</th>
+                <th>Hora fin</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for h in horarios %}
+            <tr>
+                <form method="post">
+                    <td>
+                        {{ h.id_horario }}
+                        <input type="hidden" name="id_horario" value="{{ h.id_horario }}">
+                        <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante }}">
+                    </td>
+                    <td>
+                        <select name="dia_semana" required>
+                            {% for dia in ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'] %}
+                            <option value="{{ dia }}" {% if dia == h.dia_semana %}selected{% endif %}>{{ dia }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><input type="time" name="hora_inicio" value="{{ h.hora_inicio }}" required></td>
+                    <td><input type="time" name="hora_fin" value="{{ h.hora_fin }}" required></td>
+                    <td class="actions">
+                        <button type="submit" name="accion" value="actualizar_horario">Actualizar</button>
+                        <button type="submit" name="accion" value="eliminar_horario" onclick="return confirm('Eliminar horario?')">Eliminar</button>
+                    </td>
+                </form>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">Este restaurante aun no tiene horarios</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <p>Selecciona un restaurante para ver y administrar sus horarios.</p>
+    {% endif %}
+</section>
+
+<section class="card mt">
+    <h3>Reservas registradas</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Restaurante</th>
+                <th>Mesa</th>
+                <th>Fecha</th>
+                <th>Hora</th>
+                <th>Personas</th>
+                <th>Estado</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in reservas %}
+            <tr>
+                <td>{{ r.id_reserva }}</td>
+                <td>{{ r.cliente_nombre }}</td>
+                <td>{{ r.restaurante_nombre }}</td>
+                <td>{{ r.mesa_numero }}</td>
+                <td>{{ r.fecha }}</td>
+                <td>{{ r.hora_inicio }} - {{ r.hora_fin }}</td>
+                <td>{{ r.num_personas }}</td>
+                <td>{{ r.estado }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="8">Sin reservas aun</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

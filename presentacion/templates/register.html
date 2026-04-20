@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block content %}
+<section class="card narrow">
+    <h2>Registro de cliente</h2>
+    <form method="post" class="form-grid">
+        <label>Nombre</label>
+        <input type="text" name="nombre" required>
+
+        <label>Email</label>
+        <input type="email" name="email" required>
+
+        <label>Contrasena</label>
+        <input type="password" name="password" required>
+
+        <label>Telefono</label>
+        <input type="text" name="telefono">
+
+        <label>Preferencias</label>
+        <textarea name="preferencias" rows="3"></textarea>
+
+        <button type="submit">Crear cuenta</button>
+    </form>
+    <p class="mini"><a href="{{ url_for('auth.login') }}">Volver al login</a></p>
+</section>
+{% endblock %}

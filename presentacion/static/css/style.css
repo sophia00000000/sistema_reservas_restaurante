@@ -1,0 +1,160 @@
+:root {
+    --bg: #f4f6f8;
+    --card: #ffffff;
+    --line: #d9dee5;
+    --text: #223;
+    --accent: #007a5e;
+    --danger: #b00020;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Tahoma, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+}
+
+.topbar {
+    background: #0f1720;
+    color: #fff;
+    padding: 12px 18px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.topbar a {
+    color: #fff;
+    margin-left: 10px;
+}
+
+.container {
+    max-width: 960px;
+    margin: 22px auto;
+    padding: 0 14px 24px;
+}
+
+.card {
+    background: var(--card);
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 16px;
+}
+
+.narrow {
+    max-width: 460px;
+    margin: auto;
+}
+
+.form-grid {
+    display: grid;
+    gap: 8px;
+}
+
+.form-inline {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+input, select, textarea, button {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font: inherit;
+}
+
+.form-inline input,
+.form-inline select,
+.form-inline button {
+    width: auto;
+}
+
+button {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    cursor: pointer;
+}
+
+button:hover {
+    filter: brightness(0.95);
+}
+
+.alert {
+    padding: 10px;
+    border-radius: 6px;
+    margin-bottom: 10px;
+}
+
+.alert.ok {
+    background: #dcfce7;
+    color: #14532d;
+}
+
+.alert.error {
+    background: #fee2e2;
+    color: var(--danger);
+}
+
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.grid-1 {
+    display: grid;
+    grid-template-columns: 1fr;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+th, td {
+    border: 1px solid var(--line);
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+}
+
+th {
+    background: #f1f5f9;
+}
+
+.mt {
+    margin-top: 12px;
+}
+
+.mini {
+    font-size: 0.92rem;
+}
+
+.actions {
+    display: grid;
+    gap: 6px;
+    min-width: 120px;
+}
+
+@media (max-width: 820px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+
+    .form-inline {
+        flex-direction: column;
+    }
+
+    .form-inline input,
+    .form-inline select,
+    .form-inline button {
+        width: 100%;
+    }
+}

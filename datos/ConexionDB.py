@@ -21,6 +21,7 @@ class ConexionDB:
 		self._conexion.row_factory = sqlite3.Row
 		self._conexion.execute("PRAGMA foreign_keys = ON")
 		self._crear_tablas()
+		self._migrar_columna_password()
 		self._crear_datos_iniciales()
 		self._inicializada = True
 
@@ -38,7 +39,7 @@ class ConexionDB:
 				id_usuario INTEGER PRIMARY KEY AUTOINCREMENT,
 				nombre TEXT NOT NULL,
 				email TEXT NOT NULL UNIQUE,
-				password_hash TEXT NOT NULL,
+				password TEXT NOT NULL,
 				rol TEXT NOT NULL CHECK (rol IN ('cliente', 'admin'))
 			);
 
@@ -111,6 +112,28 @@ class ConexionDB:
 			);
 			"""
 		)
+		self._conexion.commit()
+
+	def _migrar_columna_password(self):
+		columnas = [
+			row["name"]
+			for row in self._conexion.execute("PRAGMA table_info(usuario)").fetchall()
+		]
+
+		if "password" in columnas:
+			return
+
+		if "password_hash" in columnas:
+			try:
+				self._conexion.execute(
+					"ALTER TABLE usuario RENAME COLUMN password_hash TO password"
+				)
+			except sqlite3.OperationalError:
+				self._conexion.execute("ALTER TABLE usuario ADD COLUMN password TEXT")
+				self._conexion.execute(
+					"UPDATE usuario SET password = password_hash WHERE password IS NULL OR password = ''"
+				)
+
 		self._conexion.commit()
 
 	def _crear_datos_iniciales(self):
@@ -254,7 +277,7 @@ class ConexionDB:
 			self._conexion.execute(
 				"""
 				UPDATE usuario
-				SET nombre = ?, password_hash = ?, rol = ?
+				SET nombre = ?, password = ?, rol = ?
 				WHERE id_usuario = ?
 				""",
 				(nombre, password, rol, usuario["id_usuario"]),
@@ -263,7 +286,7 @@ class ConexionDB:
 
 		cur = self._conexion.execute(
 			"""
-			INSERT INTO usuario(nombre, email, password_hash, rol)
+			INSERT INTO usuario(nombre, email, password, rol)
 			VALUES (?, ?, ?, ?)
 			""",
 			(nombre, email, password, rol),

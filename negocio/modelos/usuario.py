@@ -6,5 +6,5 @@ class Usuario:
     id_usuario: int | None
     nombre: str
     email: str
-    password_hash: str
+    password: str
     rol: str

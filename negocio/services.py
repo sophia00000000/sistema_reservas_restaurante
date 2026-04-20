@@ -28,7 +28,7 @@ class AuthService:
             {
                 "nombre": nombre,
                 "email": email,
-                "password_hash": password,
+                "password": password,
                 "telefono": telefono,
                 "preferencias": preferencias,
             }
@@ -38,7 +38,7 @@ class AuthService:
             {
                 "nombre": cliente_obj.nombre,
                 "email": cliente_obj.email,
-                "password_hash": cliente_obj.password_hash,
+                "password": cliente_obj.password,
                 "rol": "cliente",
             }
         )
@@ -58,7 +58,7 @@ class AuthService:
         if not usuario:
             return None
 
-        if usuario["password_hash"] != password:
+        if usuario["password"] != password:
             return None
 
         result = {

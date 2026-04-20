@@ -8,10 +8,10 @@ class UsuarioDAO(GenericDAO):
     def crear(self, usuario):
         cur = self.db.execute(
             """
-            INSERT INTO usuario(nombre, email, password_hash, rol)
+            INSERT INTO usuario(nombre, email, password, rol)
             VALUES (?, ?, ?, ?)
             """,
-            (usuario["nombre"], usuario["email"], usuario["password_hash"], usuario["rol"]),
+            (usuario["nombre"], usuario["email"], usuario["password"], usuario["rol"]),
         )
         self.db.commit()
         return cur.lastrowid
@@ -30,13 +30,13 @@ class UsuarioDAO(GenericDAO):
         self.db.execute(
             """
             UPDATE usuario
-            SET nombre = ?, email = ?, password_hash = ?
+            SET nombre = ?, email = ?, password = ?
             WHERE id_usuario = ?
             """,
             (
                 usuario["nombre"],
                 usuario["email"],
-                usuario["password_hash"],
+                usuario["password"],
                 usuario["id_usuario"],
             ),
         )

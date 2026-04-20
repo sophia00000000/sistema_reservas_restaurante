@@ -268,6 +268,8 @@ class ConexionDB:
 
 		self._conexion.commit()
 
+
+# métodos para inicialización, no para las peticiones normales del navegador.
 	def _upsert_usuario(self, nombre, email, password, rol):
 		usuario = self._conexion.execute(
 			"SELECT id_usuario FROM usuario WHERE email = ?",

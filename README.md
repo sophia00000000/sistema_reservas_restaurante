@@ -91,6 +91,12 @@ sistema_reservas_restaurante/
             └── app.js
 ```
 
+
+Controllers: manejan la conversación web con el navegador.
+
+Services: manejan las reglas del negocio.
+
+
 ## Flujo funcional minimo
 
 ### Cliente

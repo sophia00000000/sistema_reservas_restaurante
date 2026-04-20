@@ -21,7 +21,7 @@ Construir un sistema sencillo de reservas con 2 roles:
 Archivo: `datos/ConexionDB.py`
 
 - `ConexionDB` asegura una sola instancia de conexion a SQLite.
-- La conexion inicializa tablas automaticamente y crea un admin demo.
+- La conexion inicializa tablas automaticamente y crea admin demo.
 
 ### 2) Factory Method
 Archivo: `negocio/factories.py`
@@ -40,47 +40,55 @@ Archivo: `negocio/builders.py`
 
 ```text
 sistema_reservas_restaurante/
-  app.py
-  requirements.txt
-  README.md
-  datos/
-    ConexionDB.py
-    dao/
-      base_dao.py
-      usuario_dao.py
-      cliente_dao.py
-      administrador_dao.py
-      restaurante_dao.py
-      mesa_dao.py
-      horario_dao.py
-      disponibilidad_dao.py
-      reserva_dao.py
-  negocio/
-    builders.py
-    factories.py
-    services.py
-    modelos/
-      __init__.py
-      usuario.py
-      cliente.py
-      administrador.py
-      reserva.py
-  presentacion/
-    controllers/
-      common.py
-      main_controller.py
-      auth_controller.py
-      cliente_controller.py
-      admin_controller.py
-    templates/
-      base.html
-      login.html
-      register.html
-      cliente_reservas.html
-      admin_panel.html
-    static/
-      css/style.css
-      js/app.js
+│
+├── app.py
+├── requirements.txt
+├── README.md
+│
+├── datos/
+│   ├── ConexionDB.py
+│   └── dao/
+│       ├── base_dao.py
+│       ├── usuario_dao.py
+│       ├── cliente_dao.py
+│       ├── administrador_dao.py
+│       ├── restaurante_dao.py
+│       ├── mesa_dao.py
+│       ├── horario_dao.py
+│       ├── disponibilidad_dao.py
+│       └── reserva_dao.py
+│
+├── negocio/
+│   ├── builders.py
+│   ├── factories.py
+│   ├── services.py
+│   └── modelos/
+│       ├── __init__.py
+│       ├── usuario.py
+│       ├── cliente.py
+│       ├── administrador.py
+│       └── reserva.py
+│
+└── presentacion/
+    ├── controllers/
+    │   ├── common.py
+    │   ├── main_controller.py
+    │   ├── auth_controller.py
+    │   ├── cliente_controller.py
+    │   └── admin_controller.py
+    │
+    ├── templates/
+    │   ├── base.html
+    │   ├── login.html
+    │   ├── register.html
+    │   ├── cliente_reservas.html
+    │   └── admin_panel.html
+    │
+    └── static/
+        ├── css/
+        │   └── style.css
+        └── js/
+            └── app.js
 ```
 
 ## Flujo funcional minimo
@@ -142,12 +150,6 @@ python app.py
 http://127.0.0.1:5000
 ```
 
-## Credenciales demo administrador
-
-- Email: `admin@local.com`
-- Password: `admin123`
-
-Estas credenciales se crean automaticamente la primera vez que inicia la base de datos.
 
 ## Base de datos
 
@@ -157,22 +159,15 @@ Estas credenciales se crean automaticamente la primera vez que inicia la base de
   2. Borra `reservas.db`.
   3. Ejecuta de nuevo `python app.py`.
 
-## Notas de diseno
+## Notas de diseño
 
 - Se priorizo simplicidad para fines academicos.
 - Los controladores Flask se separaron en Blueprints dentro de `presentacion/controllers/`.
 - La capa `negocio/services.py` contiene la logica de aplicacion.
 - Los DAOs centralizan operaciones SQL por entidad.
-- Las vistas estan limitadas a formularios esenciales para cumplir el enunciado.
 
-## Posibles mejoras (opcional)
 
-- Confirmacion/cancelacion de reservas por admin.
-- Validacion de cruces de horarios mas avanzada.
-- Paginacion y filtros en listados.
-- Tests unitarios para Builder, Factory y Services.
-
-## casos de uso iniciales 
+## Casos de uso iniciales 
 
 ### Administradores
 

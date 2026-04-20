@@ -1,7 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
+<section class="page-head">
+    <h2>Reservas de Cliente</h2>
+    <p>Flujo sugerido: 1) Elige restaurante, 2) Revisa horarios, 3) Crea o actualiza tu reserva.</p>
+</section>
+
 <section class="card">
-    <h2>Buscar y reservar</h2>
+    <h3>Paso 1: Seleccionar restaurante</h3>
 
     <form method="get" class="form-inline">
         <label>Restaurante</label>
@@ -13,11 +18,11 @@
             </option>
             {% endfor %}
         </select>
-        <button type="submit">Cargar mesas</button>
+        <button type="submit">Cargar restaurante</button>
     </form>
 
     {% if selected_restaurante %}
-    <h3 class="mt">Horarios del restaurante</h3>
+    <h3 class="mt">Paso 2: Horarios disponibles</h3>
     <table>
         <thead>
             <tr>
@@ -44,6 +49,8 @@
         <input type="hidden" name="accion" value="crear">
         <input type="hidden" name="id_restaurante" value="{{ selected_restaurante or '' }}">
 
+        <h3>Paso 3: Crear reserva</h3>
+
         <label>Mesa</label>
         <select name="id_mesa" required>
             <option value="">Selecciona</option>
@@ -64,12 +71,13 @@
         <label>Numero de personas</label>
         <input type="number" name="num_personas" min="1" required>
 
-        <button type="submit">Reservar</button>
+        <button type="submit">Crear reserva</button>
     </form>
 </section>
 
 <section class="card mt">
-    <h3>Mis reservas (CRUD)</h3>
+    <h3>Mis reservas (editar o eliminar)</h3>
+    <p class="mini">Puedes cambiar fecha/hora/personas. Si quieres otra mesa, crea una nueva reserva y elimina la anterior.</p>
     <table>
         <thead>
             <tr>
@@ -106,7 +114,7 @@
                     <td class="actions">
                         <input type="hidden" name="id_restaurante" value="{{ r.id_restaurante }}">
                         <button type="submit" name="accion" value="actualizar">Actualizar</button>
-                        <button type="submit" name="accion" value="eliminar" onclick="return confirm('Eliminar reserva?')">Eliminar</button>
+                        <button type="submit" class="danger" name="accion" value="eliminar" onclick="return confirm('Eliminar reserva?')">Eliminar</button>
                     </td>
                 </form>
             </tr>

@@ -1,121 +1,12 @@
 {% extends 'base.html' %}
 {% block content %}
-
-
-<section class="grid-2">
-    <article class="card">
-        <h2>Crear restaurante</h2>
-        <form method="post" class="form-grid">
-            <input type="hidden" name="accion" value="crear_restaurante">
-            <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
-
-            <label>Nombre</label>
-            <input type="text" name="nombre" required>
-
-            <label>Direccion</label>
-            <input type="text" name="direccion" required>
-
-            <label>Telefono</label>
-            <input type="text" name="telefono">
-
-            <label>Descripcion</label>
-            <textarea name="descripcion" rows="2"></textarea>
-
-            <button type="submit">Guardar</button>
-        </form>
-    </article>
-
-    <article class="card">
-        <h2>Crear mesa</h2>
-        <form method="post" class="form-grid">
-            <input type="hidden" name="accion" value="crear_mesa">
-            <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
-
-            <label>Restaurante</label>
-            <select name="id_restaurante" required>
-                {% for r in restaurantes %}
-                <option value="{{ r.id_restaurante }}">{{ r.nombre }}</option>
-                {% endfor %}
-            </select>
-
-            <label>Numero</label>
-            <input type="number" name="numero" min="1" required>
-
-            <label>Capacidad</label>
-            <input type="number" name="capacidad" min="1" required>
-
-            <button type="submit">Guardar</button>
-        </form>
-    </article>
-</section>
-
-<section class="grid-1 mt">
-    <article class="card">
-        <h2>Crear horario</h2>
-        <form method="post" class="form-inline">
-            <input type="hidden" name="accion" value="crear_horario">
-            <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
-
-            <select name="id_restaurante" required>
-                {% for r in restaurantes %}
-                <option value="{{ r.id_restaurante }}">{{ r.nombre }}</option>
-                {% endfor %}
-            </select>
-
-            <select name="dia_semana" required>
-                {% for dia in ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'] %}
-                <option value="{{ dia }}">{{ dia }}</option>
-                {% endfor %}
-            </select>
-
-            <input type="time" name="hora_inicio" required>
-            <input type="time" name="hora_fin" required>
-            <button type="submit">Guardar</button>
-        </form>
-    </article>
-</section>
-
-<section class="card mt">
-    <h3>CRUD de restaurantes</h3>
-    <table>
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Nombre</th>
-                <th>Direccion</th>
-                <th>Telefono</th>
-                <th>Descripcion</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for r in restaurantes %}
-            <tr>
-                <form method="post">
-                    <td>
-                        {{ r.id_restaurante }}
-                        <input type="hidden" name="id_restaurante" value="{{ r.id_restaurante }}">
-                        <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
-                    </td>
-                    <td><input type="text" name="nombre" value="{{ r.nombre }}" required></td>
-                    <td><input type="text" name="direccion" value="{{ r.direccion }}" required></td>
-                    <td><input type="text" name="telefono" value="{{ r.telefono or '' }}"></td>
-                    <td><input type="text" name="descripcion" value="{{ r.descripcion or '' }}"></td>
-                    <td class="actions">
-                        <button type="submit" name="accion" value="actualizar_restaurante">Actualizar</button>
-                        <button type="submit" name="accion" value="eliminar_restaurante" onclick="return confirm('Eliminar restaurante y sus mesas/horarios?')">Eliminar</button>
-                    </td>
-                </form>
-            </tr>
-            {% else %}
-            <tr><td colspan="6">Sin restaurantes</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<section class="page-head">
+    <h2>Panel de Administracion</h2>
+    <p>Flujo recomendado: 1) Selecciona restaurante, 2) Gestiona horarios, 3) Crea recursos nuevos, 4) Revisa reservas.</p>
 </section>
 
 <section class="card">
-    <h2>Seleccion de restaurante</h2>
+    <h3>Paso 1: Seleccionar restaurante de trabajo</h3>
     <form method="get" class="form-inline">
         <label>Restaurante</label>
         <select name="restaurante" required>
@@ -124,12 +15,12 @@
             <option value="{{ r.id_restaurante }}" {% if selected_restaurante and selected_restaurante|int == r.id_restaurante %}selected{% endif %}>{{ r.nombre }}</option>
             {% endfor %}
         </select>
-        <button type="submit">Ver horarios</button>
+        <button type="submit">Usar restaurante</button>
     </form>
 </section>
 
 <section class="card mt">
-    <h3>Horarios del restaurante seleccionado</h3>
+    <h3>Paso 2: Horarios del restaurante seleccionado</h3>
     {% if selected_restaurante %}
     <table>
         <thead>
@@ -161,7 +52,7 @@
                     <td><input type="time" name="hora_fin" value="{{ h.hora_fin }}" required></td>
                     <td class="actions">
                         <button type="submit" name="accion" value="actualizar_horario">Actualizar</button>
-                        <button type="submit" name="accion" value="eliminar_horario" onclick="return confirm('Eliminar horario?')">Eliminar</button>
+                        <button type="submit" class="danger" name="accion" value="eliminar_horario" onclick="return confirm('Eliminar horario?')">Eliminar</button>
                     </td>
                 </form>
             </tr>
@@ -173,6 +64,118 @@
     {% else %}
     <p>Selecciona un restaurante para ver y administrar sus horarios.</p>
     {% endif %}
+</section>
+
+<section class="grid-2">
+    <article class="card">
+        <h3>Paso 3: Crear restaurante</h3>
+        <form method="post" class="form-grid">
+            <input type="hidden" name="accion" value="crear_restaurante">
+            <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
+
+            <label>Nombre</label>
+            <input type="text" name="nombre" required>
+
+            <label>Direccion</label>
+            <input type="text" name="direccion" required>
+
+            <label>Telefono</label>
+            <input type="text" name="telefono">
+
+            <label>Descripcion</label>
+            <textarea name="descripcion" rows="2"></textarea>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </article>
+
+    <article class="card">
+        <h3>Paso 4: Crear mesa</h3>
+        <form method="post" class="form-grid">
+            <input type="hidden" name="accion" value="crear_mesa">
+            <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
+
+            <label>Restaurante</label>
+            <select name="id_restaurante" required>
+                {% for r in restaurantes %}
+                <option value="{{ r.id_restaurante }}">{{ r.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <label>Numero</label>
+            <input type="number" name="numero" min="1" required>
+
+            <label>Capacidad</label>
+            <input type="number" name="capacidad" min="1" required>
+
+            <button type="submit">Guardar</button>
+        </form>
+    </article>
+</section>
+
+<section class="grid-1 mt">
+    <article class="card">
+        <h3>Paso 5: Crear horario</h3>
+        <form method="post" class="form-inline">
+            <input type="hidden" name="accion" value="crear_horario">
+            <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
+
+            <select name="id_restaurante" required>
+                {% for r in restaurantes %}
+                <option value="{{ r.id_restaurante }}">{{ r.nombre }}</option>
+                {% endfor %}
+            </select>
+
+            <select name="dia_semana" required>
+                {% for dia in ['Lunes','Martes','Miercoles','Jueves','Viernes','Sabado','Domingo'] %}
+                <option value="{{ dia }}">{{ dia }}</option>
+                {% endfor %}
+            </select>
+
+            <input type="time" name="hora_inicio" required>
+            <input type="time" name="hora_fin" required>
+            <button type="submit">Guardar</button>
+        </form>
+    </article>
+</section>
+
+<section class="card mt">
+    <h3>Restaurantes existentes</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Direccion</th>
+                <th>Telefono</th>
+                <th>Descripcion</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for r in restaurantes %}
+            <tr>
+                <form method="post">
+                    <td>
+                        {{ r.id_restaurante }}
+                        <input type="hidden" name="id_restaurante" value="{{ r.id_restaurante }}">
+                        <input type="hidden" name="id_restaurante_selected" value="{{ selected_restaurante or '' }}">
+                    </td>
+                    <td><input type="text" name="nombre" value="{{ r.nombre }}" required></td>
+                    <td><input type="text" name="direccion" value="{{ r.direccion }}" required></td>
+                    <td><input type="text" name="telefono" value="{{ r.telefono or '' }}"></td>
+                    <td><input type="text" name="descripcion" value="{{ r.descripcion or '' }}"></td>
+                    <td class="actions">
+                        <button type="submit" name="accion" value="actualizar_restaurante">Actualizar</button>
+                        <button type="submit" class="danger" name="accion" value="eliminar_restaurante" onclick="return confirm('Eliminar restaurante y sus mesas/horarios?')">Eliminar</button>
+                    </td>
+                </form>
+            </tr>
+            {% else %}
+            <tr><td colspan="6">Sin restaurantes</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
 </section>
 
 <section class="card mt">

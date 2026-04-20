@@ -1,4 +1,4 @@
-# Sistema de Reservas de Restaurante (Mini Proyecto)
+# Sistema de Reservas de Restaurante
 
 Mini proyecto educativo para entender patrones creacionales con una app web local.
 
@@ -174,121 +174,62 @@ Estas credenciales se crean automaticamente la primera vez que inicia la base de
 
 ## casos de uso iniciales 
 
+### Administradores
 
-3 administradores:
-admin@local.com / admin123
-admin2@local.com / admin234
-admin3@local.com / admin345
-3 usuarios cliente:
-cliente1@local.com / cliente123
-cliente2@local.com / cliente234
-cliente3@local.com / cliente345
-3 restaurantes:
-La Terraza
-Sushi Norte
-Pasta Viva
-Horarios por día para cada restaurante.
-
-Mesas base por restaurante:
-
-Mesa 1 (2 personas)
-Mesa 2 (4 personas)
-Mesa 3 (4 personas)
-Mesa 4 (6 personas)
+| Nombre          | Email                                       | Password | Cargo                 | Teléfono   | Salario |
+| --------------- | ------------------------------------------- | -------- | --------------------- | ---------- | ------- |
+| Administrador   | [admin@local.com](mailto:admin@local.com)   | admin123 | Administrador General | 3001000001 | 3500    |
+| Marta Jaramillo | [admin2@local.com](mailto:admin2@local.com) | admin234 | Gerente Operaciones   | 3001000002 | 3200    |
+| Diego Ruiz      | [admin3@local.com](mailto:admin3@local.com) | admin345 | Supervisor            | 3001000003 | 2800    |
 
 
-        admins = [
-                    {
-                        "nombre": "Administrador",
-                        "email": "admin@local.com",
-                        "password": "admin123",
-                        "cargo": "Administrador General",
-                        "telefono": "3001000001",
-                        "salario": 3500,
-                    },
-                    {
-                        "nombre": "Marta Jaramillo",
-                        "email": "admin2@local.com",
-                        "password": "admin234",
-                        "cargo": "Gerente Operaciones",
-                        "telefono": "3001000002",
-                        "salario": 3200,
-                    },
-                    {
-                        "nombre": "Diego Ruiz",
-                        "email": "admin3@local.com",
-                        "password": "admin345",
-                        "cargo": "Supervisor",
-                        "telefono": "3001000003",
-                        "salario": 2800,
-                    },
-                ]
+### Clientes
 
-                clientes = [
-                    {
-                        "nombre": "Sofia Lopez",
-                        "email": "cliente1@local.com",
-                        "password": "cliente123",
-                        "telefono": "3010000001",
-                        "preferencias": "Mesa cerca de ventana",
-                    },
-                    {
-                        "nombre": "Carlos Perez",
-                        "email": "cliente2@local.com",
-                        "password": "cliente234",
-                        "telefono": "3010000002",
-                        "preferencias": "Sin gluten",
-                    },
-                    {
-                        "nombre": "Laura Medina",
-                        "email": "cliente3@local.com",
-                        "password": "cliente345",
-                        "telefono": "3010000003",
-                        "preferencias": "Zona tranquila",
-                    },
-                ]
+| Nombre       | Email                                           | Password   | Teléfono   | Preferencias          |
+| ------------ | ----------------------------------------------- | ---------- | ---------- | --------------------- |
+| Sofia Lopez  | [cliente1@local.com](mailto:cliente1@local.com) | cliente123 | 3010000001 | Mesa cerca de ventana |
+| Carlos Perez | [cliente2@local.com](mailto:cliente2@local.com) | cliente234 | 3010000002 | Sin gluten            |
+| Laura Medina | [cliente3@local.com](mailto:cliente3@local.com) | cliente345 | 3010000003 | Zona tranquila        |
 
-                restaurantes = [
-                    {
-                        "nombre": "La Terraza",
-                        "direccion": "Calle 10 #12-34",
-                        "telefono": "6041111111",
-                        "descripcion": "Comida tradicional y parrilla",
-                        "horarios": [
-                            ("Lunes", "12:00", "22:00"),
-                            ("Martes", "12:00", "22:00"),
-                            ("Miercoles", "12:00", "22:00"),
-                            ("Jueves", "12:00", "22:00"),
-                            ("Viernes", "12:00", "23:00"),
-                            ("Sabado", "12:00", "23:00"),
-                            ("Domingo", "12:00", "20:00"),
-                        ],
-                    },
-                    {
-                        "nombre": "Sushi Norte",
-                        "direccion": "Carrera 45 #8-21",
-                        "telefono": "6042222222",
-                        "descripcion": "Sushi y cocina asiatica",
-                        "horarios": [
-                            ("Lunes", "11:30", "21:30"),
-                            ("Martes", "11:30", "21:30"),
-                            ("Miercoles", "11:30", "21:30"),
-                            ("Jueves", "11:30", "21:30"),
-                            ("Viernes", "11:30", "22:30"),
-                            ("Sabado", "12:00", "22:30"),
-                        ],
-                    },
-                    {
-                        "nombre": "Pasta Viva",
-                        "direccion": "Avenida 33 #55-78",
-                        "telefono": "6043333333",
-                        "descripcion": "Pasta artesanal y vinos",
-                        "horarios": [
-                            ("Martes", "12:00", "21:00"),
-                            ("Miercoles", "12:00", "21:00"),
-                            ("Jueves", "12:00", "21:00"),
-                            ("Viernes", "12:00", "22:00"),
-                            ("Sabado", "12:00", "22:00"),
-                            ("Domingo", "12:00", "20:00"),
-                        ],
-                    },
+### Restaurantes 
+
+| Nombre      | Dirección         | Teléfono   | Descripción                   |
+| ----------- | ----------------- | ---------- | ----------------------------- |
+| La Terraza  | Calle 10 #12-34   | 6041111111 | Comida tradicional y parrilla |
+| Sushi Norte | Carrera 45 #8-21  | 6042222222 | Sushi y cocina asiatica       |
+| Pasta Viva  | Avenida 33 #55-78 | 6043333333 | Pasta artesanal y vinos       |
+
+### Horarios - La terraza
+
+| Día       | Apertura | Cierre |
+| --------- | -------- | ------ |
+| Lunes     | 12:00    | 22:00  |
+| Martes    | 12:00    | 22:00  |
+| Miercoles | 12:00    | 22:00  |
+| Jueves    | 12:00    | 22:00  |
+| Viernes   | 12:00    | 23:00  |
+| Sabado    | 12:00    | 23:00  |
+| Domingo   | 12:00    | 20:00  |
+
+### Horarios - Sushi Norte 
+
+| Día       | Apertura | Cierre |
+| --------- | -------- | ------ |
+| Lunes     | 11:30    | 21:30  |
+| Martes    | 11:30    | 21:30  |
+| Miercoles | 11:30    | 21:30  |
+| Jueves    | 11:30    | 21:30  |
+| Viernes   | 11:30    | 22:30  |
+| Sabado    | 12:00    | 22:30  |
+
+### Horarios Pasta Viva 
+| Día       | Apertura | Cierre |
+| --------- | -------- | ------ |
+| Martes    | 12:00    | 21:00  |
+| Miercoles | 12:00    | 21:00  |
+| Jueves    | 12:00    | 21:00  |
+| Viernes   | 12:00    | 22:00  |
+| Sabado    | 12:00    | 22:00  |
+| Domingo   | 12:00    | 20:00  |
+
+

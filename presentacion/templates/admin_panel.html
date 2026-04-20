@@ -1,18 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-<section class="card">
-    <h2>Seleccion de restaurante</h2>
-    <form method="get" class="form-inline">
-        <label>Restaurante</label>
-        <select name="restaurante" required>
-            <option value="">Selecciona</option>
-            {% for r in restaurantes %}
-            <option value="{{ r.id_restaurante }}" {% if selected_restaurante and selected_restaurante|int == r.id_restaurante %}selected{% endif %}>{{ r.nombre }}</option>
-            {% endfor %}
-        </select>
-        <button type="submit">Ver horarios</button>
-    </form>
-</section>
+
 
 <section class="grid-2">
     <article class="card">
@@ -124,6 +112,20 @@
             {% endfor %}
         </tbody>
     </table>
+</section>
+
+<section class="card">
+    <h2>Seleccion de restaurante</h2>
+    <form method="get" class="form-inline">
+        <label>Restaurante</label>
+        <select name="restaurante" required>
+            <option value="">Selecciona</option>
+            {% for r in restaurantes %}
+            <option value="{{ r.id_restaurante }}" {% if selected_restaurante and selected_restaurante|int == r.id_restaurante %}selected{% endif %}>{{ r.nombre }}</option>
+            {% endfor %}
+        </select>
+        <button type="submit">Ver horarios</button>
+    </form>
 </section>
 
 <section class="card mt">

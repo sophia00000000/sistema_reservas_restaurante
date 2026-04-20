@@ -172,11 +172,6 @@ class ConexionDB:
 				"telefono": "6041111111",
 				"descripcion": "Comida tradicional y parrilla",
 				"horarios": [
-					("Lunes", "12:00", "22:00"),
-					("Martes", "12:00", "22:00"),
-					("Miercoles", "12:00", "22:00"),
-					("Jueves", "12:00", "22:00"),
-					("Viernes", "12:00", "23:00"),
 					("Sabado", "12:00", "23:00"),
 					("Domingo", "12:00", "20:00"),
 				],

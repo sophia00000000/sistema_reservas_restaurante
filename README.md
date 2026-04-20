@@ -195,3 +195,100 @@ Mesa 1 (2 personas)
 Mesa 2 (4 personas)
 Mesa 3 (4 personas)
 Mesa 4 (6 personas)
+
+
+        admins = [
+                    {
+                        "nombre": "Administrador",
+                        "email": "admin@local.com",
+                        "password": "admin123",
+                        "cargo": "Administrador General",
+                        "telefono": "3001000001",
+                        "salario": 3500,
+                    },
+                    {
+                        "nombre": "Marta Jaramillo",
+                        "email": "admin2@local.com",
+                        "password": "admin234",
+                        "cargo": "Gerente Operaciones",
+                        "telefono": "3001000002",
+                        "salario": 3200,
+                    },
+                    {
+                        "nombre": "Diego Ruiz",
+                        "email": "admin3@local.com",
+                        "password": "admin345",
+                        "cargo": "Supervisor",
+                        "telefono": "3001000003",
+                        "salario": 2800,
+                    },
+                ]
+
+                clientes = [
+                    {
+                        "nombre": "Sofia Lopez",
+                        "email": "cliente1@local.com",
+                        "password": "cliente123",
+                        "telefono": "3010000001",
+                        "preferencias": "Mesa cerca de ventana",
+                    },
+                    {
+                        "nombre": "Carlos Perez",
+                        "email": "cliente2@local.com",
+                        "password": "cliente234",
+                        "telefono": "3010000002",
+                        "preferencias": "Sin gluten",
+                    },
+                    {
+                        "nombre": "Laura Medina",
+                        "email": "cliente3@local.com",
+                        "password": "cliente345",
+                        "telefono": "3010000003",
+                        "preferencias": "Zona tranquila",
+                    },
+                ]
+
+                restaurantes = [
+                    {
+                        "nombre": "La Terraza",
+                        "direccion": "Calle 10 #12-34",
+                        "telefono": "6041111111",
+                        "descripcion": "Comida tradicional y parrilla",
+                        "horarios": [
+                            ("Lunes", "12:00", "22:00"),
+                            ("Martes", "12:00", "22:00"),
+                            ("Miercoles", "12:00", "22:00"),
+                            ("Jueves", "12:00", "22:00"),
+                            ("Viernes", "12:00", "23:00"),
+                            ("Sabado", "12:00", "23:00"),
+                            ("Domingo", "12:00", "20:00"),
+                        ],
+                    },
+                    {
+                        "nombre": "Sushi Norte",
+                        "direccion": "Carrera 45 #8-21",
+                        "telefono": "6042222222",
+                        "descripcion": "Sushi y cocina asiatica",
+                        "horarios": [
+                            ("Lunes", "11:30", "21:30"),
+                            ("Martes", "11:30", "21:30"),
+                            ("Miercoles", "11:30", "21:30"),
+                            ("Jueves", "11:30", "21:30"),
+                            ("Viernes", "11:30", "22:30"),
+                            ("Sabado", "12:00", "22:30"),
+                        ],
+                    },
+                    {
+                        "nombre": "Pasta Viva",
+                        "direccion": "Avenida 33 #55-78",
+                        "telefono": "6043333333",
+                        "descripcion": "Pasta artesanal y vinos",
+                        "horarios": [
+                            ("Martes", "12:00", "21:00"),
+                            ("Miercoles", "12:00", "21:00"),
+                            ("Jueves", "12:00", "21:00"),
+                            ("Viernes", "12:00", "22:00"),
+                            ("Sabado", "12:00", "22:00"),
+                            ("Domingo", "12:00", "20:00"),
+                        ],
+                    },

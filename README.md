@@ -41,14 +41,14 @@ Archivo: `negocio/builders.py`
 ```text
 sistema_reservas_restaurante/
 │
-├── app.py
-├── requirements.txt
+├── app.py -> arranca Flask, registra los controladores y levanta el servidor local.
+├── requirements.txt -> Lista de dependencias
 ├── README.md
 │
 ├── datos/
-│   ├── ConexionDB.py
-│   └── dao/
-│       ├── base_dao.py
+│   ├── ConexionDB.py ->  conexión SQLite, genera las tablas si no existen y carga datos iniciales.
+│   └── dao/ 
+│       ├── base_dao.py -> interfaz CRUD común.
 │       ├── usuario_dao.py
 │       ├── cliente_dao.py
 │       ├── administrador_dao.py
@@ -58,33 +58,32 @@ sistema_reservas_restaurante/
 │       ├── disponibilidad_dao.py
 │       └── reserva_dao.py
 │
-├── negocio/
-│   ├── builders.py
-│   ├── factories.py
-│   ├── services.py
-│   └── modelos/
-│       ├── __init__.py
-│       ├── usuario.py
-│       ├── cliente.py
-│       ├── administrador.py
-│       └── reserva.py
+├── negocio/ ->
+│   ├── builders.py ->  crea la reserva paso a paso
+│   ├── factories.py -> crea objetos de usuario de tipo cliente o admin
+│   ├── services.py -> lógica del sistema: login, registro, reservas, validaciones, administración.
+│   └── modelos/ -> POO
+│       ├── usuario.py 
+│       ├── cliente.py 
+│       ├── administrador.py 
+│       └── reserva.py 
 │
 └── presentacion/
-    ├── controllers/
-    │   ├── common.py
-    │   ├── main_controller.py
-    │   ├── auth_controller.py
-    │   ├── cliente_controller.py
-    │   └── admin_controller.py
+    ├── controllers/ ->
+    │   ├── common.py -> decoradores
+    │   ├── main_controller.py -> define la ruta principal.
+    │   ├── auth_controller.py -> login, registro y logout.
+    │   ├── cliente_controller.py -> reservas del cliente.
+    │   └── admin_controller.py -> panel del admin.
+    │ 
+    ├── templates/ ->  vistas
+    │   ├── base.html 
+    │   ├── login.html 
+    │   ├── register.html 
+    │   ├── cliente_reservas.html 
+    │   └── admin_panel.html 
     │
-    ├── templates/
-    │   ├── base.html
-    │   ├── login.html
-    │   ├── register.html
-    │   ├── cliente_reservas.html
-    │   └── admin_panel.html
-    │
-    └── static/
+    └── static/ ->
         ├── css/
         │   └── style.css
         └── js/

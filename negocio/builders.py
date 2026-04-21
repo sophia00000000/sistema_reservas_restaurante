@@ -6,6 +6,7 @@ class ReservaBuilder:
         self.reset()
 
     def reset(self):
+        # Estado interno temporal del builder.
         self._data = {
             "id_reserva": None,
             "id_cliente": None,
@@ -32,6 +33,7 @@ class ReservaBuilder:
         return self
 
     def build(self):
+        # Validaciones minimas antes de materializar la reserva.
         if not self._data["id_cliente"]:
             raise ValueError("La reserva requiere id_cliente")
         if not self._data["id_disponibilidad"]:
@@ -48,6 +50,7 @@ class ReservaDirector:
     def construir_reserva_estandar(
         self, builder, id_cliente, id_disponibilidad, num_personas
     ):
+        # Receta estandar de construccion para nuevas reservas.
         return (
             builder.reset()
             .set_cliente(id_cliente)

@@ -4,6 +4,7 @@ from negocio.modelos import Administrador, Cliente
 
 
 class UsuarioFactory(ABC):
+    # Contrato comun para creacion de usuarios segun rol.
     @abstractmethod
     def crear_usuario(self, data):
         raise NotImplementedError
@@ -11,6 +12,7 @@ class UsuarioFactory(ABC):
 
 class ClienteFactory(UsuarioFactory):
     def crear_usuario(self, data):
+        # Crea un objeto de dominio Cliente con defaults utiles.
         return Cliente(
             id_usuario=data.get("id_usuario"),
             nombre=data["nombre"],
@@ -26,6 +28,7 @@ class ClienteFactory(UsuarioFactory):
 
 class AdminFactory(UsuarioFactory):
     def crear_usuario(self, data):
+        # Crea un objeto de dominio Administrador.
         return Administrador(
             id_usuario=data.get("id_usuario"),
             nombre=data["nombre"],

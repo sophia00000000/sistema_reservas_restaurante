@@ -1,5 +1,4 @@
 from flask import Flask
-
 from presentacion.controllers.admin_controller import admin_bp
 from presentacion.controllers.auth_controller import auth_bp
 from presentacion.controllers.cliente_controller import cliente_bp
@@ -10,6 +9,7 @@ app = Flask(
     template_folder="presentacion/templates",
     static_folder="presentacion/static",
 )
+# donde está la DB
 app.config["SECRET_KEY"] = "dev-key-reservas"
 
 app.register_blueprint(main_bp)

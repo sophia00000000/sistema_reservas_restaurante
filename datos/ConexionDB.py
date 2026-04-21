@@ -15,6 +15,7 @@ class ConexionDB:
 		if self._inicializada:
 			return
 
+		# Singleton de conexion: se inicializa una sola vez por ejecucion.
 		base_dir = Path(__file__).resolve().parents[1]
 		self.db_path = Path(db_path) if db_path else base_dir / "reservas.db"
 		self._conexion = sqlite3.connect(self.db_path, check_same_thread=False)
@@ -33,6 +34,7 @@ class ConexionDB:
 		return self._conexion
 
 	def _crear_tablas(self):
+		# Define el esquema minimo del sistema de reservas.
 		self._conexion.executescript(
 			"""
 			CREATE TABLE IF NOT EXISTS usuario (
@@ -115,6 +117,7 @@ class ConexionDB:
 		self._conexion.commit()
 
 	def _migrar_columna_password(self):
+		# Compatibilidad con versiones anteriores que usaban password_hash.
 		columnas = [
 			row["name"]
 			for row in self._conexion.execute("PRAGMA table_info(usuario)").fetchall()
@@ -137,6 +140,7 @@ class ConexionDB:
 		self._conexion.commit()
 
 	def _crear_datos_iniciales(self):
+		# Datos semilla para pruebas locales en clase/demo.
 		admins = [
 			{
 				"nombre": "Administrador",
@@ -269,7 +273,7 @@ class ConexionDB:
 		self._conexion.commit()
 
 
-# métodos para inicialización, no para las peticiones normales del navegador.
+# Metodos para inicializacion, no para las peticiones normales del navegador.
 	def _upsert_usuario(self, nombre, email, password, rol):
 		usuario = self._conexion.execute(
 			"SELECT id_usuario FROM usuario WHERE email = ?",

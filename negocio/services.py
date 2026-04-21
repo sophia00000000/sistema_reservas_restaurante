@@ -10,10 +10,12 @@ from datos.dao.restaurante_dao import RestauranteDAO
 from datos.dao.usuario_dao import UsuarioDAO
 from negocio.builders import ReservaBuilder, ReservaDirector
 from negocio.factories import AdminFactory, ClienteFactory
+from negocio.modelos import Disponibilidad, Horario, Mesa, Restaurante
 
 
 class AuthService:
     def __init__(self, db):
+        # AuthService orquesta autenticacion usando DAO + Factory.
         self.usuario_dao = UsuarioDAO(db)
         self.cliente_dao = ClienteDAO(db)
         self.admin_dao = AdministradorDAO(db)
@@ -21,6 +23,7 @@ class AuthService:
         self.admin_factory = AdminFactory()
 
     def registrar_cliente(self, nombre, email, password, telefono, preferencias):
+        # 1) valida unicidad de email, 2) crea objeto Cliente, 3) persiste en usuario/cliente.
         if self.usuario_dao.buscar_por_email(email):
             raise ValueError("El email ya esta registrado")
 
@@ -54,6 +57,7 @@ class AuthService:
         return {"id_usuario": id_usuario, "id_cliente": id_cliente}
 
     def login(self, email, password):
+        # Login simple para practica academica (password en texto plano).
         usuario = self.usuario_dao.buscar_por_email(email)
         if not usuario:
             return None
@@ -82,6 +86,7 @@ class AuthService:
 
 class ReservaService:
     def __init__(self, db):
+        # ReservaService centraliza reglas de disponibilidad y horario.
         self.restaurante_dao = RestauranteDAO(db)
         self.mesa_dao = MesaDAO(db)
         self.horario_dao = HorarioDAO(db)
@@ -91,15 +96,45 @@ class ReservaService:
         self.director = ReservaDirector()
 
     def listar_restaurantes(self):
-        return self.restaurante_dao.listar_todos()
+        rows = self.restaurante_dao.listar_todos()
+        return [
+            Restaurante(
+                id_restaurante=row["id_restaurante"],
+                nombre=row["nombre"],
+                direccion=row["direccion"],
+                telefono=row["telefono"] or "",
+                descripcion=row["descripcion"] or "",
+            )
+            for row in rows
+        ]
 
     def listar_mesas_por_restaurante(self, id_restaurante):
-        return self.mesa_dao.buscar_por_restaurante(id_restaurante)
+        rows = self.mesa_dao.buscar_por_restaurante(id_restaurante)
+        return [
+            Mesa(
+                id_mesa=row["id_mesa"],
+                id_restaurante=row["id_restaurante"],
+                numero=row["numero"],
+                capacidad=row["capacidad"],
+                estado=row["estado"],
+            )
+            for row in rows
+        ]
 
     def listar_horarios_por_restaurante(self, id_restaurante):
         if not id_restaurante:
             return []
-        return self.horario_dao.buscar_por_restaurante(id_restaurante)
+        rows = self.horario_dao.buscar_por_restaurante(id_restaurante)
+        return [
+            Horario(
+                id_horario=row["id_horario"],
+                id_restaurante=row["id_restaurante"],
+                dia_semana=row["dia_semana"],
+                hora_inicio=row["hora_inicio"],
+                hora_fin=row["hora_fin"],
+            )
+            for row in rows
+        ]
 
     def _validar_datos_reserva(self, fecha, hora_inicio, hora_fin):
         if not fecha or not hora_inicio or not hora_fin:
@@ -127,14 +162,23 @@ class ReservaService:
         num_personas,
         excluir_id_disponibilidad=None,
     ):
-        mesa = self.mesa_dao.buscar_por_id(id_mesa)
-        if not mesa:
+        # Valida mesa, horario del restaurante, solapamiento y capacidad.
+        mesa_row = self.mesa_dao.buscar_por_id(id_mesa)
+        if not mesa_row:
             raise ValueError("La mesa no existe")
 
-        if int(mesa["id_restaurante"]) != int(id_restaurante):
+        mesa = Mesa(
+            id_mesa=mesa_row["id_mesa"],
+            id_restaurante=mesa_row["id_restaurante"],
+            numero=mesa_row["numero"],
+            capacidad=mesa_row["capacidad"],
+            estado=mesa_row["estado"],
+        )
+
+        if int(mesa.id_restaurante) != int(id_restaurante):
             raise ValueError("La mesa seleccionada no pertenece al restaurante")
 
-        if mesa["estado"] != "activa":
+        if mesa.estado != "activa":
             raise ValueError("La mesa no esta activa para reservas")
 
         fecha_dt = self._validar_datos_reserva(fecha, hora_inicio, hora_fin)
@@ -170,7 +214,7 @@ class ReservaService:
         ):
             raise ValueError("La mesa ya esta reservada en ese horario")
 
-        if int(num_personas) > int(mesa["capacidad"]):
+        if int(num_personas) > int(mesa.capacidad):
             raise ValueError("La cantidad de personas supera la capacidad de la mesa")
 
     def crear_reserva(
@@ -183,6 +227,7 @@ class ReservaService:
         hora_fin,
         num_personas,
     ):
+        # Flujo: validar reglas -> crear disponibilidad -> construir Reserva (Builder) -> guardar.
         self._validar_reglas_reserva(
             id_restaurante=id_restaurante,
             id_mesa=id_mesa,
@@ -192,13 +237,21 @@ class ReservaService:
             num_personas=num_personas,
         )
 
+        disponibilidad = Disponibilidad(
+            id_disponibilidad=None,
+            id_mesa=id_mesa,
+            fecha=fecha,
+            hora_inicio=hora_inicio,
+            hora_fin=hora_fin,
+            estado="disponible",
+        )
         id_disponibilidad = self.disponibilidad_dao.crear_si_no_existe(
             {
-                "id_mesa": id_mesa,
-                "fecha": fecha,
-                "hora_inicio": hora_inicio,
-                "hora_fin": hora_fin,
-                "estado": "disponible",
+                "id_mesa": disponibilidad.id_mesa,
+                "fecha": disponibilidad.fecha,
+                "hora_inicio": disponibilidad.hora_inicio,
+                "hora_fin": disponibilidad.hora_fin,
+                "estado": disponibilidad.estado,
             }
         )
 
@@ -238,6 +291,7 @@ class ReservaService:
         hora_fin,
         num_personas,
     ):
+        # Revalida la reserva y mueve la relacion a la nueva disponibilidad si aplica.
         reserva_actual = self.reserva_dao.buscar_detallada_cliente_por_id(
             id_reserva=id_reserva,
             id_cliente=id_cliente,
@@ -255,13 +309,21 @@ class ReservaService:
             excluir_id_disponibilidad=reserva_actual["id_disponibilidad"],
         )
 
+        disponibilidad_nueva_data = Disponibilidad(
+            id_disponibilidad=None,
+            id_mesa=id_mesa,
+            fecha=fecha,
+            hora_inicio=hora_inicio,
+            hora_fin=hora_fin,
+            estado="disponible",
+        )
         id_disponibilidad_nueva = self.disponibilidad_dao.crear_si_no_existe(
             {
-                "id_mesa": id_mesa,
-                "fecha": fecha,
-                "hora_inicio": hora_inicio,
-                "hora_fin": hora_fin,
-                "estado": "disponible",
+                "id_mesa": disponibilidad_nueva_data.id_mesa,
+                "fecha": disponibilidad_nueva_data.fecha,
+                "hora_inicio": disponibilidad_nueva_data.hora_inicio,
+                "hora_fin": disponibilidad_nueva_data.hora_fin,
+                "estado": disponibilidad_nueva_data.estado,
             }
         )
         disponibilidad_nueva = self.disponibilidad_dao.buscar_por_id(id_disponibilidad_nueva)
@@ -289,6 +351,7 @@ class ReservaService:
                 self.disponibilidad_dao.marcar_disponible(id_disponibilidad_anterior)
 
     def eliminar_reserva(self, id_cliente, id_reserva):
+        # Elimina reserva y libera bloque de disponibilidad si ya no hay referencias.
         reserva = self.reserva_dao.buscar_detallada_cliente_por_id(id_reserva, id_cliente)
         if not reserva:
             raise ValueError("Reserva no encontrada")
@@ -302,18 +365,26 @@ class ReservaService:
 
 class AdminService:
     def __init__(self, db):
+        # Casos de uso del administrador (restaurantes, mesas, horarios y consulta de reservas).
         self.restaurante_dao = RestauranteDAO(db)
         self.mesa_dao = MesaDAO(db)
         self.horario_dao = HorarioDAO(db)
         self.reserva_dao = ReservaDAO(db)
 
     def crear_restaurante(self, nombre, direccion, telefono, descripcion):
+        restaurante = Restaurante(
+            id_restaurante=None,
+            nombre=nombre,
+            direccion=direccion,
+            telefono=telefono,
+            descripcion=descripcion,
+        )
         return self.restaurante_dao.crear(
             {
-                "nombre": nombre,
-                "direccion": direccion,
-                "telefono": telefono,
-                "descripcion": descripcion,
+                "nombre": restaurante.nombre,
+                "direccion": restaurante.direccion,
+                "telefono": restaurante.telefono,
+                "descripcion": restaurante.descripcion,
             }
         )
 
@@ -339,12 +410,19 @@ class AdminService:
         self.restaurante_dao.eliminar(id_restaurante)
 
     def crear_mesa(self, id_restaurante, numero, capacidad, estado="activa"):
+        mesa = Mesa(
+            id_mesa=None,
+            id_restaurante=id_restaurante,
+            numero=numero,
+            capacidad=capacidad,
+            estado=estado,
+        )
         return self.mesa_dao.crear(
             {
-                "id_restaurante": id_restaurante,
-                "numero": numero,
-                "capacidad": capacidad,
-                "estado": estado,
+                "id_restaurante": mesa.id_restaurante,
+                "numero": mesa.numero,
+                "capacidad": mesa.capacidad,
+                "estado": mesa.estado,
             }
         )
 
@@ -352,19 +430,37 @@ class AdminService:
         if hora_inicio >= hora_fin:
             raise ValueError("La hora de inicio debe ser menor que la hora de fin")
 
+        horario = Horario(
+            id_horario=None,
+            id_restaurante=id_restaurante,
+            dia_semana=dia_semana,
+            hora_inicio=hora_inicio,
+            hora_fin=hora_fin,
+        )
+
         return self.horario_dao.crear(
             {
-                "id_restaurante": id_restaurante,
-                "dia_semana": dia_semana,
-                "hora_inicio": hora_inicio,
-                "hora_fin": hora_fin,
+                "id_restaurante": horario.id_restaurante,
+                "dia_semana": horario.dia_semana,
+                "hora_inicio": horario.hora_inicio,
+                "hora_fin": horario.hora_fin,
             }
         )
 
     def listar_horarios_por_restaurante(self, id_restaurante):
         if not id_restaurante:
             return []
-        return self.horario_dao.buscar_por_restaurante(id_restaurante)
+        rows = self.horario_dao.buscar_por_restaurante(id_restaurante)
+        return [
+            Horario(
+                id_horario=row["id_horario"],
+                id_restaurante=row["id_restaurante"],
+                dia_semana=row["dia_semana"],
+                hora_inicio=row["hora_inicio"],
+                hora_fin=row["hora_fin"],
+            )
+            for row in rows
+        ]
 
     def actualizar_horario(self, id_horario, dia_semana, hora_inicio, hora_fin):
         horario = self.horario_dao.buscar_por_id(id_horario)
@@ -392,4 +488,14 @@ class AdminService:
         return self.reserva_dao.listar_detalladas()
 
     def listar_restaurantes(self):
-        return self.restaurante_dao.listar_todos()
+        rows = self.restaurante_dao.listar_todos()
+        return [
+            Restaurante(
+                id_restaurante=row["id_restaurante"],
+                nombre=row["nombre"],
+                direccion=row["direccion"],
+                telefono=row["telefono"] or "",
+                descripcion=row["descripcion"] or "",
+            )
+            for row in rows
+        ]
